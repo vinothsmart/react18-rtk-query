@@ -7,20 +7,33 @@ export const apiSlice = createApi({
     getTodos: builder.query({
       query: () => "todos",
     }),
-    // addTodo: builder.mutation({
-    //   query: (body) => ({
-    //     url: "todos",
-    //     method: "POST",
-    //     body,
-    //   }),
-    // }),
-    // deleteTodo: builder.mutation({
-    //   query: (id) => ({
-    //     url: `todos/${id}`,
-    //     method: "DELETE",
-    //   }),
-    // }),
+    addTodo: builder.mutation({
+      query: (body) => ({
+        url: "todos",
+        method: "POST",
+        body,
+      }),
+    }),
+    updateTodo: builder.mutation({
+      query: ({ id, body }) => ({
+        url: `todos/${id}`,
+        method: "PATCH",
+        body,
+      }),
+    }),
+    deleteTodo: builder.mutation({
+      query: ({ id }) => ({
+        url: `todos/${id}`,
+        method: "DELETE",
+        body: id,
+      }),
+    }),
   }),
 });
 
-export const { useGetTodosQuery } = apiSlice;
+export const {
+  useGetTodosQuery,
+  useAddTodoMutation,
+  useUpdateTodoMutation,
+  useDeleteTodoMutation,
+} = apiSlice;
