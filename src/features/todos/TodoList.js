@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faUpload } from "@fortawesome/free-solid-svg-icons";
 import {
-  useAddTodoMutation,
-  useDeleteTodoMutation,
   useGetTodosQuery,
   useUpdateTodoMutation,
+  useDeleteTodoMutation,
+  useAddTodoMutation,
 } from "../api/apiSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faUpload } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 
 const TodoList = () => {
   const [newTodo, setNewTodo] = useState("");
@@ -24,12 +24,7 @@ const TodoList = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    //addTodo
-    addTodo({
-      userId: 1,
-      title: newTodo,
-      completed: false,
-    });
+    addTodo({ userId: 1, title: newTodo, completed: false });
     setNewTodo("");
   };
 
@@ -52,38 +47,32 @@ const TodoList = () => {
   );
 
   let content;
-
   if (isLoading) {
-    content = <div>Loading...</div>;
-  }
-  if (isError) {
-    content = <div>Error: {error}</div>;
-  }
-  if (isSuccess) {
-    // content = JSON.stringify(todos);
-    content = todos.map((todo) => (
-      <article key={todo.id}>
-        <div className="todo">
-          <input
-            type="checkbox"
-            checked={todo.completed}
-            onChange={() =>
-              updateTodo({
-                ...todo,
-                completed: !todo.completed,
-              })
-            }
-          />
-          <label htmlFor={todo.id}>{todo.title}</label>
-        </div>
-        <button className="trash" onClick={() => deleteTodo(todo.id)}>
-          <FontAwesomeIcon
-            icon={faTrash}
-            onClick={() => deleteTodo({ id: todo.id })}
-          />
-        </button>
-      </article>
-    ));
+    content = <p>Loading...</p>;
+  } else if (isSuccess) {
+    content = todos.map((todo) => {
+      //JSON.stringify(todos)
+      return (
+        <article key={todo.id}>
+          <div className="todo">
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              id={todo.id}
+              onChange={() =>
+                updateTodo({ ...todo, completed: !todo.completed })
+              }
+            />
+            <label htmlFor={todo.id}>{todo.title}</label>
+          </div>
+          <button className="trash" onClick={() => deleteTodo({ id: todo.id })}>
+            <FontAwesomeIcon icon={faTrash} />
+          </button>
+        </article>
+      );
+    });
+  } else if (isError) {
+    content = <p>{error}</p>;
   }
 
   return (
